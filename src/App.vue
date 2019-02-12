@@ -1,18 +1,44 @@
 <template>
   <div id="app">
     <img alt="Vue logo" src="./assets/logo.png">
-    <HelloWorld msg="Welcome to Your Vue.js App"/>
+        <Spinner v-show="load"/>
+        <Calendar :countrys="countrys"/>
   </div>
 </template>
 
 <script>
-import HelloWorld from './components/HelloWorld.vue'
+
+import Calendar from './components/calendar.vue'
+import Spinner from './components/spinner.vue'
+import { getCountry } from './api'
 
 export default {
   name: 'app',
+   data () {
+    return {
+      countrys: [],
+      load:true
+    }
+  },
   components: {
-    HelloWorld
-  }
+    Calendar,
+    Spinner
+  },
+  methods: {
+    getAllCountrys() {
+      const self = this
+      this.load = true
+      this.countrys = []
+      
+      getCountry().then(c => {
+          self.countrys = c
+          self.load = false
+      })
+    }
+  },
+  mounted() {
+    this.getAllCountrys()
+  },
 }
 </script>
 
