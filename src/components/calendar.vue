@@ -1,19 +1,35 @@
 <template>
 <div>
-    <select v-model="selectCountry" class="select-country">
-        <option v-for="(country, index) in countrys" :key="index" v-bind:value="country.fed_country_name">{{country.fed_country_name}}</option>
-    </select>
+    <Spinner v-show="!load"/>
 
-    <table class="table-responsive-full">
+    
+
+    <div class="Button-container" >
+        <button class="Button-child" v-for="(item, index) in dateForFilter" :key="index" v-on:click="handleMonth(item)">
+            {{item | formatDate}}
+        </button>
+    </div>
+
+    <table class="table-responsive-full" v-show="load">
         <thead>
           <tr>
-            <th>Chess Tournament Calendar</th>
+            <th>
+                <div class="Table-th">
+
+                    <span class="Table-th-child">Chess Tournament Calendar</span>
+
+                    <select v-model="selectCountry" class="select-country Table-th-child" v-show="load">
+                        <option :value="null">All options</option>
+                        <option v-for="(country, index) in countrys" :key="index" v-bind:value="country.fed_country_name">{{country.fed_country_name}}</option>
+                    </select>
+                </div>
+            </th>
           </tr>
         </thead>
         <tbody>
-          <tr v-for="(tournament, index) in tournaments" :key="index">
+          <tr v-for="(tournament, index) in filterTournament" :key="index">
               <template>
-                <td data-label="First Name">{{tournament.t_date_from}}  <img width="16" height="16" :alt="tournament.fed_country_name" :src="getFlagSrc(tournament.fed_country_name)"> {{tournament.t_name}}</td>
+                <td>{{ tournament.t_date_from }}  <img width="16" height="16" :alt="tournament.fed_country_name" :src="getFlagSrc(tournament.fed_country_name)"> {{tournament.t_name}}</td>
               </template>
           </tr>
         </tbody>
@@ -22,41 +38,50 @@
 </template>
 
 <script>
+import Spinner from './spinner.vue'
 import { getTournament } from '../api'
-
 export default {
     name: "Calendar",
     props: ['countrys'],
     data() {
         return {
-          selectCountry: "",
-          tournaments_copy: [],
+          selectCountry: "null",
+          selectDate: "null",
           tournaments: [],
-          load: true
+          dateForFilter: [],
+          load: false
         }
     },
+    components: {
+        Spinner,
+    },
     methods: {
-        getSelectedCountry() {
-            const self = this
-            this.load = true
-            let aux = []
-            this.tournaments = this.tournaments_copy.map(c => {
-                if (c.fed_country_name == this.selectCountry) {
-                    aux.push(c)
+        handleMonth(date) {
+            this.selectDate = date
+        },
+        getMonthForFilter() {
+            let currentDate = new Date();
+
+            for (let i = 0; i < 12; i++) {
+                
+                if (!this.dateForFilter.includes(`${currentDate.getMonth()}-${currentDate.getFullYear()}`)) {
+                    this.dateForFilter.push(`${currentDate.getMonth()}-${currentDate.getFullYear()}`)
                 }
-            })
-            self.load = false
-            this.tournaments = aux
+                
+                currentDate.setMonth(currentDate.getMonth() + 1);
+            }
+
+            return this.dateForFilter
         },
         getAllTournament() {
             const self = this
-            this.load = true
+            this.load = false
             this.tournaments = []
+            this.monthsForFilter = []
 
             getTournament().then(t => {
               self.tournaments = t
-              self.tournaments_copy = t
-              self.load = false
+              self.load = true
             })
         },
         getFlagSrc(country) {
@@ -70,19 +95,50 @@ export default {
         }
     },
     mounted() {
-    this.getAllTournament()
+        this.getAllTournament(),
+        this.getMonthForFilter()
     },
-    // filters: {
-        // formatlower: function (string) {
-        //     if (!string) return ''
-        //     return string.toLowerCase().replace(" ", "-");
-        // }
-    // },
-    watch: {
-        selectCountry: function () {
-            this.getSelectedCountry()
+    filters: {
+        formatDate: function (value) {
+            let monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+            let d = value.split('-')
+            let n = new Date(d[1], d[0], '01')
+            return `${monthNames[n.getMonth()]} ${n.getFullYear()}`;
         }
-    }
+    },
+    computed: {
+        filterTournament: function () {
+            let data = this.tournaments
+            let countrySelected = this.selectCountry
+            let monthSelected = this.selectDate
+
+            if (countrySelected=="null") {
+                //
+            } else {
+                data = data.filter(tournament => tournament.fed_country_name == countrySelected)
+            }
+
+            if (monthSelected=="null") {
+                //
+            } else {
+                data = data.filter(tournament => {
+                    let monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+                    
+                    let d1 = tournament.t_date_from.split('-')
+                    let n1 = new Date(d1[2], d1[1], '01')
+                    // console.log(`${monthNames[n1.getMonth() -1]}-${n1.getFullYear()}`)
+
+                    let d2 = monthSelected.split('-')
+                    let n2 = new Date(d2[1], d2[0], '01')
+
+                    // console.log(`${monthNames[n2.getMonth()]}-${n2.getFullYear()}`)
+                    return `${monthNames[n1.getMonth() -1 ]}-${n1.getFullYear()}` == `${monthNames[n2.getMonth()]}-${n2.getFullYear()}`
+                })
+            }
+
+            return data
+        }
+    },
 }
 </script>
 
@@ -103,11 +159,31 @@ input, select {
 }
 small {color:#808080;}
 
+.Button-container, .Table-th {
+    display: flex;
+}
+
+.Table-th .Table-th-child {
+    justify-content: normal;
+    width: 100%;
+}
+
+.Button-container {
+    margin: auto;
+    width: 50%;
+    max-width: 100%;
+    flex-wrap: wrap;
+    justify-content: space-around;
+}
+
+.Button-child {
+    margin-bottom: 10px;
+    height: 40px;
+}
 button {
     bottom:1px;
     cursor:pointer;
     margin-right:8px;
-    position:relative;
     padding:4px 11px;
     border:1px solid #0085a6;
     background:none;
@@ -118,7 +194,7 @@ button {
 }
 button:hover {background:#0085a6; color:#fff;}
 .select-country {
-    margin-bottom:40px;
+    /* margin-bottom:40px; */
 }
 .table-responsive {min-height:.01%;	overflow-x:auto;}
 @media screen and (max-width: 801px) {
@@ -188,7 +264,8 @@ caption {font-size:1.111em; font-weight:300; padding:10px 0;}
         background-color:#fff;
         border-top:none;
         position:relative;
-        padding-left:50%;
+        /* padding-left:50%; */
+        padding: 5% 20%;
     }
     .table-responsive-full td:hover {background-color:#eee; color:#000;}
     .table-responsive-full td:hover:before {color:hsl(0, 0%, 40%);}
