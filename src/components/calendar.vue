@@ -2,9 +2,7 @@
 <div>
     <Spinner v-show="!load"/>
 
-    
-
-    <div class="Button-container" >
+    <div class="Button-container" v-show="load">
         <button class="Button-child" v-for="(item, index) in dateForFilter" :key="index" v-on:click="handleMonth(item)">
             {{item | formatDate}}
         </button>
@@ -113,25 +111,23 @@ export default {
             let monthSelected = this.selectDate
 
             if (countrySelected=="null") {
-                //
+                data = this.tournaments
             } else {
                 data = data.filter(tournament => tournament.fed_country_name == countrySelected)
             }
 
             if (monthSelected=="null") {
-                //
+                // data = data
             } else {
                 data = data.filter(tournament => {
                     let monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
                     
                     let d1 = tournament.t_date_from.split('-')
                     let n1 = new Date(d1[2], d1[1], '01')
-                    // console.log(`${monthNames[n1.getMonth() -1]}-${n1.getFullYear()}`)
 
                     let d2 = monthSelected.split('-')
                     let n2 = new Date(d2[1], d2[0], '01')
 
-                    // console.log(`${monthNames[n2.getMonth()]}-${n2.getFullYear()}`)
                     return `${monthNames[n1.getMonth() -1 ]}-${n1.getFullYear()}` == `${monthNames[n2.getMonth()]}-${n2.getFullYear()}`
                 })
             }
@@ -170,7 +166,7 @@ small {color:#808080;}
 
 .Button-container {
     margin: auto;
-    width: 50%;
+    /* width: 50%; */
     max-width: 100%;
     flex-wrap: wrap;
     justify-content: space-around;
@@ -209,7 +205,7 @@ table {
     margin-bottom:40px;
     margin-top:.5em;	
     margin: auto;
-    width:50%; 
+    /* width:50%;  */
     max-width:100%;
     
 }
