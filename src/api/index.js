@@ -1,5 +1,5 @@
 import axios from 'axios';
-const URL_API = 'http://159.65.67.135:3001/api';
+const URL_API = 'https://ecubitcoin.com/api';
 
 export const getCountry = () => axios.get(`${URL_API}/country`)
 .then(json => json.data.data)
