@@ -1,5 +1,5 @@
 import axios from 'axios';
-const URL_API = 'https://ecubitcoin.com/api';
+const URL_API = 'https://app.albertochueca.com/api';
 
 export const getCountry = () => axios.get(`${URL_API}/country`)
 .then(json => json.data.data)
