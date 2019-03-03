@@ -9,6 +9,8 @@
   },
   "dependencies": {
     "@fortawesome/fontawesome-svg-core": "^1.2.15",
+    "@fortawesome/free-brands-svg-icons": "^5.7.2",
+    "@fortawesome/free-regular-svg-icons": "^5.7.2",
     "@fortawesome/free-solid-svg-icons": "^5.7.2",
     "@fortawesome/vue-fontawesome": "^0.1.5",
     "ajv": "^6.8.1",
@@ -16,7 +18,9 @@
     "bootstrap": "^4.3.1",
     "bootstrap-vue": "^2.0.0-rc.13",
     "vue": "^2.6.7",
-    "vue-cool-select": "^2.0.1"
+    "vue-cool-select": "^2.0.1",
+    "vue-social-sharing": "^2.4.2",
+    "vue-socialmedia-share": "^1.0.1"
   },
   "devDependencies": {
     "@vue/cli-plugin-babel": "^3.4.0",

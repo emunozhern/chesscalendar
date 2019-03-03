@@ -11,45 +11,67 @@
         </div>
 
         <div class="SelectContainer" v-show="load">
-            <div class="SelectedDate">
-                <cool-select class="CoolSelect" v-model="selectDate" :items="dateForFilter" placeholder="Select date">
-                    <template slot="item" slot-scope="{ item: country }">
-                        {{country | formatDate}}
-                    </template>
 
-                    <template slot="selection" slot-scope="{ item: country }">
-                        {{country | formatDate}}
-                    </template>
-                </cool-select>
+            <div class="SelectContainerInner">
+                <div class="SelectedDate">
+                    <cool-select class="CoolSelect" v-model="selectDate" :items="dateForFilter" placeholder="Select date">
+                        <template slot="item" slot-scope="{ item: country }">
+                            {{country | formatDate}}
+                        </template>
+
+                        <template slot="selection" slot-scope="{ item: country }">
+                            {{country | formatDate}}
+                        </template>
+                    </cool-select>
+                </div>
+
+                <div class="SelectedCountry" v-show="load">
+                    <cool-select class="CoolSelect" v-model="selectCountry" :items="countrys" item-value="fed_country_name" item-text="fed_country_name"  placeholder="Select country">
+                        <template slot="item" slot-scope="{ item: country }">
+                            <div class="Item">
+                                <div class="country">
+                                    <img class="country-flag" :src="getFlagSrc(country.fed_country_name)" width="24" height="24">
+                                </div>
+
+                                <div class="description" style="align-self: center;">
+                                    {{ country.fed_country_name }}
+                                </div>
+                            </div>
+                        </template>
+
+                        <template slot="selection" slot-scope="{ item: country }">
+                            <div class="Item">
+                                <div class="country">
+                                    <img class="country-flag" :src="getFlagSrc(country.fed_country_name)" width="24" height="24">
+                                </div>
+
+                                <div class="description" style="align-self: center;">
+                                    {{ country.fed_country_name }}
+                                </div>
+                            </div>
+
+                        </template>
+                    </cool-select>
+                </div>
             </div>
 
-            <div class="SelectedCountry" v-show="load">
-                <cool-select class="CoolSelect" v-model="selectCountry" :items="countrys" item-value="fed_country_name" item-text="fed_country_name"  placeholder="Select country">
-                    <template slot="item" slot-scope="{ item: country }">
-                        <div class="Item">
-                            <div class="country">
-                                <img class="country-flag" :src="getFlagSrc(country.fed_country_name)" width="24" height="24">
-                            </div>
-
-                            <div class="description" style="align-self: center;">
-                                {{ country.fed_country_name }}
-                            </div>
-                        </div>
-                    </template>
-
-                    <template slot="selection" slot-scope="{ item: country }">
-                        <div class="Item">
-                            <div class="country">
-                                <img class="country-flag" :src="getFlagSrc(country.fed_country_name)" width="24" height="24">
-                            </div>
-
-                            <div class="description" style="align-self: center;">
-                                {{ country.fed_country_name }}
-                            </div>
-                        </div>
-
-                    </template>
-                </cool-select>
+            <div class="GroupSocial">
+                <social-sharing url="http://app.albertochueca.com/" title="Chess Tournament Calendar" description="Chess Tournament Calendar world's biggest chess calendar." media="/img/logo.png" hashtags="Chess,Tournament" inline-template>
+                    <div>
+                        <network network="facebook">
+                            <font-awesome-icon :icon="['fab', 'facebook']" /> Facebook
+                        </network>
+                        <network network="twitter">
+                            <font-awesome-icon :icon="['fab', 'twitter']" /> Twitter
+                        </network>
+                        <network network="reddit">
+                            <font-awesome-icon :icon="['fab', 'reddit']" /> Reddit
+                        </network>
+                        <network network="email">
+                            <font-awesome-icon icon="envelope" /> Email
+                        </network>
+                    </div>
+                </social-sharing>
             </div>
         </div>
      
@@ -97,6 +119,17 @@
 import Spinner from './spinner.vue'
 import { getTournament } from '../api'
 import { CoolSelect } from 'vue-cool-select'
+import {
+  Facebook,
+  Twitter,
+  Linkedin,
+  Pinterest,
+  Reddit,
+  Telegram,
+  WhatsApp,
+  Email,
+  Google
+} from "vue-socialmedia-share";
 
 export default {
     name: "Calendar",
@@ -109,16 +142,22 @@ export default {
           dateForFilter: [],
           load: false,
           pageNumber: 0,
-        //   listData: {
-        //       type: Array,
-        //       required: true
-        //   },
+            url: "https://app.com/mbj36",
           size: 150
         }
     },
     components: {
         Spinner,
-        CoolSelect
+        CoolSelect,
+        Facebook,
+        Twitter,
+        Linkedin,
+        Pinterest,
+        Reddit,
+        Telegram,
+        WhatsApp,
+        Email,
+        Google
     },
     methods: {
         nextPage() {
@@ -314,9 +353,17 @@ require(`../assets/header-chess-tournaments.jpg`)
 .table{
     background-color: #ffffff9e
 }
-
+.SelectContainerInner {
+    display: flex;
+}
 .SelectContainer {
     display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+}
+
+.GroupSocial span {
+    cursor: pointer;
 }
 @media screen and (max-width: 760px) {
     .SelectContainer {
@@ -324,6 +371,12 @@ require(`../assets/header-chess-tournaments.jpg`)
     }
     .Logo {
         width: 100%;
+    }
+    .HeaderDown {
+        background-position: top center;
+    }
+    .GroupSocial {
+        margin-bottom: 10px;
     }
 }
 @media screen and (max-width: 560px) {
