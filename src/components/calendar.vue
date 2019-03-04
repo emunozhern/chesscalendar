@@ -56,7 +56,7 @@
             </div>
 
             <div class="GroupSocial">
-                <social-sharing url="http://app.albertochueca.com/" title="Chess Tournament Calendar" description="Chess Tournament Calendar world's biggest chess calendar." media="/img/logo.png" hashtags="Chess,Tournament" inline-template>
+                <social-sharing url="https://app.albertochueca.com/" title="Chess Tournament Calendar" description="Chess Tournament Calendar world's biggest chess calendar." media="/img/logo.png" hashtags="Chess,Tournament" inline-template>
                     <div>
                         <network network="facebook">
                             <font-awesome-icon :icon="['fab', 'facebook']" /> Facebook
@@ -92,7 +92,7 @@
                         </div>
 
                         <div v-else>
-                            <a href="https://www.albertochueca.com"><img class="Imagen" src="../assets/banner.png" target="_blank"></a>
+                            <a class="ImagenContainer" href="https://www.albertochueca.com"><img class="Imagen" src="../assets/banner.png" target="_blank"></a>
                         </div>
 
                         <div class="link" v-if="index != 15">
@@ -308,6 +308,11 @@ require(`../assets/header-chess-tournaments.jpg`)
 </script>
 
 <style>
+.ImagenContainer {
+    width: 60%;
+    display: block;
+    margin: auto;
+}
 .Imagen {
     width: 100%;
     height: 100%;
@@ -385,6 +390,9 @@ require(`../assets/header-chess-tournaments.jpg`)
     }
     .HeaderDown {
         flex-direction: column;
+    }
+    .ImagenContainer {
+        width: 100%;
     }
 }
 
